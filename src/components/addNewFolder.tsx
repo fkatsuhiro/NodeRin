@@ -8,8 +8,8 @@ type AddNewFolderProps = {
   initialFolderName?: string;
 };
 
-const AddNewFolder = ({ onAddFolder, onClose, currentPage }: AddNewFolderProps) => {
-  const [inputFolderName, setInputFolderName] = useState("");
+const AddNewFolder = ({ onAddFolder, onClose, currentPage, initialFolderName="" }: AddNewFolderProps) => {
+  const [inputFolderName, setInputFolderName] = useState(initialFolderName);
   const [inputMemo, setInputMemo] = useState("");
 
   const handleInputFolderNameChange = (e) => {
@@ -28,8 +28,8 @@ const AddNewFolder = ({ onAddFolder, onClose, currentPage }: AddNewFolderProps) 
   };
 
   useEffect(() => {
-    console.log("Current Page URL:", currentPage.url);
-  }, [currentPage]);
+    setInputFolderName(initialFolderName);
+  }, [initialFolderName]);
 
   return (
     <div className="add-new-folder w-60" style={{margin: "0 auto"}}>
@@ -46,11 +46,11 @@ const AddNewFolder = ({ onAddFolder, onClose, currentPage }: AddNewFolderProps) 
         placeholder="メモを入力"
         className="input w-80 form-control mt-3"
       />
-      <div className="d-flex mt-3 ms-auto ">
-        <button className="btn btn-danger btn-sm" onClick={handleAddButtonClick}>
+      <div className="d-flex mt-3 ms-auto">
+        <button className="btn btn-danger btn-sm ms-auto" onClick={handleAddButtonClick}>
           Add
         </button>
-        <div>&nbsp;</div>
+        <div >&nbsp;</div>
         <button className="btn btn-secondary btn-sm" onClick={onClose}>
           Cancel
         </button>

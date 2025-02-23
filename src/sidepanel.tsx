@@ -4,7 +4,6 @@ import AddNewFolder from "./components/addNewFolder";
 import deleteIcon from './assets/deleteIcon.png';
 import plusIcon from './assets/plusIcon.png';
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./styles/style.css";
 
 type Data = {
   title: string;
@@ -62,12 +61,12 @@ function SidePanel() {
     setFolders(updatedFolders);
   };
 
-  const removeItem = (folderIndex: number, url: string) => {
+  const removeItem = (folderIndex: number, itemIndex: number) => {
     const updatedFolders = folders.map((folder, i) => {
       if (i === folderIndex) {
         return {
           ...folder,
-          items: folder.items.filter((item) => item.url !== url)
+          items: folder.items.filter((_, index) => index !== itemIndex)
         };
       }
       return folder;
@@ -98,11 +97,11 @@ function SidePanel() {
         </div>
       )}
       <ul className="mt-3">
-        {folders.map((folder, index) => (
-          <li key={index} style={{ marginBottom: 8, listStyle: "none" }}>
+        {folders.map((folder, folderIndex) => (
+          <li key={folderIndex} style={{ marginBottom: 8, listStyle: "none" }}>
             <details>
-              <summary className="d-flex align-items-center">
-                <div>{folder.name}</div>
+              <summary style={{ width: "100%" }}>
+                {folder.name}
                 <img
                   onClick={() => {
                     setInitialFolderName(folder.name);
@@ -124,7 +123,7 @@ function SidePanel() {
                       <p>{item.note}</p>
                     </div>
                     <img
-                      onClick={() => removeItem(index, item.url)}
+                      onClick={() => removeItem(folderIndex, itemIndex)}
                       alt="delete"
                       src={deleteIcon}
                       style={{ width: "20px", height: "20px", cursor: "pointer" }}
