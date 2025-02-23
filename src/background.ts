@@ -12,15 +12,25 @@ chrome.runtime.onInstalled.addListener(() => {
         const activeTab = await storage.get<Data>("activeTab");
         if (!activeTab) return;
   
-        const items = (await storage.get<Data[]>("saveItems")) ?? [];
-        const isCurrentPageURL = items.some((v) => v.url === activeTab.url);
-        if (isCurrentPageURL) {
-          const newItems = items.filter((v) => v.url !== activeTab.url);
-          await storage.set("saveItems", newItems);
+        const folders = (await storage.get<Folder[]>("folders")) ?? [];
+        const folderIndex = folders.findIndex((folder) =>
+          folder.items.some((item) => item.url === activeTab.url)
+        );
+  
+        if (folderIndex !== -1) {
+          const folder = folders[folderIndex];
+          const newItems = folder.items.filter((item) => item.url !== activeTab.url);
+          folders[folderIndex] = { ...folder, items: newItems };
         } else {
-          items.push(activeTab);
-          await storage.set("saveItems", items);
+          const newFolder: Folder = {
+            name: "New Folder",
+            note: "",
+            items: [activeTab],
+          };
+          folders.push(newFolder);
         }
+  
+        await storage.set("folders", folders);
         chrome.runtime.sendMessage({
           type: "UPDATE",
         });

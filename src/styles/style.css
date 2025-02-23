@@ -1,0 +1,19 @@
+details {
+    margin-bottom: 8px;
+  }
+  
+  summary {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  summary div {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  summary img {
+    margin-left: auto;
+  }

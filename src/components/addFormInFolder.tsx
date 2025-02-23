@@ -26,19 +26,12 @@ const AddFormInFolder = ({ onClose }) => {
       </button>
       <input
         type="text"
-        value={inputURL}
-        onChange={handleInputURLChange}
-        placeholder="URLを入力"
-        className="input"
-      />
-      <input
-        type="text"
         value={inputMemo}
         onChange={handleInputMemoChange}
         placeholder="メモを入力"
         className="input"
       />
-      <button className="add-button" onClick={handleAddButtonClick}>
+      <button className="" onClick={handleAddButtonClick}>
         Add
       </button>
     </div>

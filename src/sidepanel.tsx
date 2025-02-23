@@ -1,103 +1,144 @@
-import AddFormInFolder from "./components/addFormInFolder"
-import AddNewFolder from "./components/addNewFolder"
 import { useState, useEffect } from "react";
 import { useStorage } from "@plasmohq/storage/hook";
-import "bootstrap/dist/css/bootstrap.min.css";
+import AddNewFolder from "./components/addNewFolder";
 import deleteIcon from './assets/deleteIcon.png';
 import plusIcon from './assets/plusIcon.png';
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./styles/style.css";
 
 type Data = {
-  title: string
-  url: string
-  favIconUrl?: string
-}
+  title: string;
+  url: string;
+  note?: string;
+};
 
-function IndexSidePanel() {
-  const [items, setItems] = useStorage<Data[]>("saveItems", []);
-  const deleteIcon = require('./assetts/deleteIcon.png');
-  const [data, setData] = useState("")
-  const [showTab, setShowTab] = useState(false)
+type Folder = {
+  name: string;
+  note: string;
+  items: Data[];
+};
 
+function SidePanel() {
+  const [folders, setFolders] = useStorage<Folder[]>("folders", []);
   const [currentPage, setCurrentPage] = useState<Data>({
     title: "",
-    url: "",
-    favIconUrl: ""
-  })
-
-  const handleButtonClick = () => {
-    setShowTab(true)
-  }
-
-  const handleCloseTab = () => {
-    setShowTab(false)
-  }
+    url: ""
+  });
+  const [showAddFolder, setShowAddFolder] = useState(false);
+  const [initialFolderName, setInitialFolderName] = useState<string | null>(null);
 
   // 現在のタブ情報を取得
   useEffect(() => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      const activeTab = tabs[0]
-      if (!activeTab) return
+      const activeTab = tabs[0];
+      if (!activeTab) return;
 
       setCurrentPage({
-        title: activeTab.title || "No title",
-        url: activeTab.url || "No url",
-        favIconUrl: activeTab.favIconUrl || ""
-      })
-    })
-  }, [])
+        title: activeTab.title || "There are no title",
+        url: activeTab.url || "There are no url"
+      });
+    });
+  }, []);
 
-  // URL を保存する関数
-  const saveCurrentPage = () => {
-    if (!currentPage.url) return
-    //このページがすでに保存されているか確認
-    if (items.some((item) => item.url === currentPage.url)) {
-      alert("This Page is already saved!!")
-      return
-    }
+  const handleAddFolder = (folderName: string, note: string, currentPage: Data) => {
+    const newFolder: Folder = {
+      name: folderName,
+      note: note,
+      items: [{ ...currentPage, note }]
+    };
+    setFolders([...folders, newFolder]);
+  };
 
-    // 新しいデータを追加
-    setItems([...items, currentPage])
-  }
+  const handleAddItemToFolder = (folderName: string, note: string, currentPage: Data) => {
+    const updatedFolders = folders.map((folder) => {
+      if (folder.name === folderName) {
+        return {
+          ...folder,
+          items: [...folder.items, { ...currentPage, note }]
+        };
+      }
+      return folder;
+    });
+    setFolders(updatedFolders);
+  };
 
-  // 削除処理
-  const removeItem = (url: string) => {
-    setItems(items.filter((item) => item.url !== url))
-  }
+  const removeItem = (folderIndex: number, url: string) => {
+    const updatedFolders = folders.map((folder, i) => {
+      if (i === folderIndex) {
+        return {
+          ...folder,
+          items: folder.items.filter((item) => item.url !== url)
+        };
+      }
+      return folder;
+    });
+    setFolders(updatedFolders);
+  };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        padding: 16
-      }}>
+    <div style={{ display: "flex", flexDirection: "column", padding: 16 }}>
       <h2>You can save some URLs!!</h2>
-      <AddNewFolder />
-
-      <button className="button" onClick={handleButtonClick}>
-        Add
-      </button>
-      {showTab && <AddFormInFolder onClose={handleCloseTab} />}
-      {/* 保存された URL のリスト */}
-      <ul>
-        {items.map((item, index) => (
-          <li key={index} style={{ marginBottom: 8 }}>
-            <img
-              src={item.favIconUrl}
-              alt="favicon"
-              style={{ width: 16, height: 16, marginRight: 8 }}
-            />
-            <a href={item.url} target="_blank" rel="noopener noreferrer">
-              {item.title}
-            </a>
-            <img onClick={() => removeItem(item.url)} alt="delete" src={deleteIcon} style={{width:'20px', height: '20px', pointer: 'cursor'}} />
+      <img
+        onClick={() => {
+          setInitialFolderName(null);
+          setShowAddFolder(true);
+        }}
+        alt="add"
+        src={plusIcon}
+        style={{ width: "40px", height: "40px", cursor: "pointer" }}
+      />
+      {showAddFolder && (
+        <div className="overlay">
+          <AddNewFolder
+            onAddFolder={initialFolderName ? handleAddItemToFolder : handleAddFolder}
+            onClose={() => setShowAddFolder(false)}
+            currentPage={currentPage}
+            initialFolderName={initialFolderName || ""}
+          />
+        </div>
+      )}
+      <ul className="mt-3">
+        {folders.map((folder, index) => (
+          <li key={index} style={{ marginBottom: 8, listStyle: "none" }}>
+            <details>
+              <summary className="d-flex align-items-center">
+                <div>{folder.name}</div>
+                <img
+                  onClick={() => {
+                    setInitialFolderName(folder.name);
+                    setShowAddFolder(true);
+                  }}
+                  alt="add"
+                  src={plusIcon}
+                  style={{ width: "30px", height: "30px", cursor: "pointer"}}
+                  className="ms-auto"
+                />
+              </summary>
+              <ul style={{ listStyle: "none", width: "100%" }}>
+                {folder.items.map((item, itemIndex) => (
+                  <li key={itemIndex} style={{ marginBottom: 8 }} className="d-flex mt-2">
+                    <div>
+                      <a href={item.url} target="_blank" rel="noopener noreferrer">
+                        {item.title}
+                      </a>
+                      <p>{item.note}</p>
+                    </div>
+                    <img
+                      onClick={() => removeItem(index, item.url)}
+                      alt="delete"
+                      src={deleteIcon}
+                      style={{ width: "20px", height: "20px", cursor: "pointer" }}
+                      className="ms-auto"
+                    />
+                  </li>
+                ))}
+              </ul>
+            </details>
           </li>
         ))}
       </ul>
-      {/* 現在のページを保存するボタン */}
-      <img onClick={saveCurrentPage} alt="delete" src={plusIcon} style={{width:'40px', height: '40px', pointer: 'cursor'}} />
     </div>
-  )
+  );
 }
 
-export default IndexSidePanel
+export default SidePanel;
