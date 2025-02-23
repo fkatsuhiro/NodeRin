@@ -4,7 +4,7 @@
     "version": "1.0",
     "permissions": ["storage", "activeTab", "tabs", "scripting"],
     "host_permissions": ["<all_urls>"],
-    "sidebar_action": {
+    "sidebar": {
       "default_panel": "sidebar.html"
     },
     "background": {
