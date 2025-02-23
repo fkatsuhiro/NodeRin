@@ -1,61 +1,63 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
 
-const AddFormInFolder = ({ onClose }) => {
-    const [inputFolderName, setInputFolderName] = useState("")
-  const [inputURL, setInputURL] = useState("")
-  const [inputMemo, setInputMemo] = useState("")
-  
+type AddNewFolderProps = {
+  onAddFolder: (folderName: string, note: string, currentPage: { title: string; url: string }) => void;
+  onClose: () => void;
+  currentPage: { title: string; url: string };
+  initialFolderName?: string;
+};
+
+const AddNewFolder = ({ onAddFolder, onClose, currentPage, initialFolderName="" }: AddNewFolderProps) => {
+  const [inputFolderName, setInputFolderName] = useState(initialFolderName);
+  const [inputMemo, setInputMemo] = useState("");
+
   const handleInputFolderNameChange = (e) => {
-    setInputFolderName(e.target.value)
-   }
-
-  const handleInputURLChange = (e) => {
-    setInputURL(e.target.value)
-  }
+    setInputFolderName(e.target.value);
+  };
 
   const handleInputMemoChange = (e) => {
-    setInputMemo(e.target.value)
-  }
+    setInputMemo(e.target.value);
+  };
 
   const handleAddButtonClick = () => {
-    // 追加後の処理を書く
-    console.log("AddURL:", inputURL)
-    console.log("AddMemo:", inputMemo)
-    
-    // 入力内容をリセット
-    setInputFolderName("")
-    setInputURL("")
-    setInputMemo("")
-  }
+    onAddFolder(inputFolderName, inputMemo, currentPage);
+    setInputFolderName("");
+    setInputMemo("");
+    onClose();
+  };
+
+  useEffect(() => {
+    setInputFolderName(initialFolderName);
+  }, [initialFolderName]);
 
   return (
-    <div className="tab">
+    <div className="add-new-folder w-60" style={{margin: "0 auto"}}>
       <input
         type="text"
         value={inputFolderName}
         onChange={handleInputFolderNameChange}
         placeholder="フォルダ名を入力"
-        className="input"
+        className="input w-80 form-control mt-3"
       />
-      <input
-        type="text"
-        value={inputURL}
-        onChange={handleInputURLChange}
-        placeholder="URLを入力"
-        className="input"
-      />
-      <input
-        type="text"
+      <textarea
         value={inputMemo}
         onChange={handleInputMemoChange}
         placeholder="メモを入力"
-        className="input"
+        className="input w-80 form-control mt-3"
       />
-      <button className="add-button" onClick={handleAddButtonClick}>
-        Add
-      </button>
+      <div className="d-flex mt-3 ms-auto">
+        <button className="btn btn-danger btn-sm ms-auto" onClick={handleAddButtonClick}>
+          Add
+        </button>
+        <div >&nbsp;</div>
+        <button className="btn btn-secondary btn-sm" onClick={onClose}>
+          Cancel
+        </button>
+      </div>
+      <hr className="mt-2" />
     </div>
-  )
-}
+  );
+};
 
-export default AddFormInFolder
+export default AddNewFolder;
