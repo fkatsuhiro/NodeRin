@@ -1,27 +1,27 @@
 import { useState } from "react"
+import AddFormInFolder from "./components/addFormInFolder"
+import AddNewFolder from "./components/addNewFolder"
 
 function IndexSidePanel() {
   const [data, setData] = useState("")
+  const [showTab, setShowTab] = useState(false)
+
+  const handleButtonClick = () => {
+    setShowTab(true)
+  }
+
+  const handleCloseTab = () => {
+    setShowTab(false)
+  }
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        padding: 16
-      }}>
-      <h2>
-        Welcome to your
-        <a href="https://www.plasmo.com" target="_blank">
-          {" "}
-          Plasmo
-        </a>{" "}
-        Extension!
-      </h2>
-      <input onChange={(e) => setData(e.target.value)} value={data} />
-      <a href="https://docs.plasmo.com" target="_blank">
-        View Docs
-      </a>
+    <div className="container">
+      <AddNewFolder />
+
+      <button className="button" onClick={handleButtonClick}>
+        Add
+      </button>
+      {showTab && <AddFormInFolder onClose={handleCloseTab} />}
     </div>
   )
 }
