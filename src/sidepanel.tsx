@@ -10,7 +10,7 @@ export type Data = {
   title: string;
   url: string;
   note?: string;
-  timestamp : string;
+  addDataTime : string;
 };
 
 export type Folder = {
@@ -24,7 +24,7 @@ function SidePanel() {
   const [currentPage, setCurrentPage] = useState<Data>({
     title: "",
     url: "",
-    timestamp: ""
+    addDataTime: "",
   });
   const [showAddFolder, setShowAddFolder] = useState(false);
   const [initialFolderName, setInitialFolderName] = useState<string | null>(null);
@@ -38,7 +38,7 @@ function SidePanel() {
       setCurrentPage({
         title: activeTab.title || "There are no title",
         url: activeTab.url || "There are no url",
-        timestamp: new Date().toISOString() // 時間を記録
+        addDataTime: ""
       });
     });
   };
@@ -63,21 +63,21 @@ function SidePanel() {
     };
   }, []);
 
-  const handleAddFolder = (folderName: string, note: string, ) => {
+  const handleAddFolder = (folderName: string, note: string) => {
     const newFolder: Folder = {
       name: folderName,
       note: note,
-      items: [{ ...currentPage, note }]
+      items: [{ ...currentPage, note, addDataTime: new Date().toISOString() }]
     };
     setFolders([...folders, newFolder]);
   };
 
-  const handleAddItemToFolder = (folderName: string, note: string, ) => {
+  const handleAddItemToFolder = (folderName: string, note: string) => {
     const updatedFolders = folders.map((folder) => {
       if (folder.name === folderName) {
         return {
           ...folder,
-          items: [...folder.items, { ...currentPage, note }]
+          items: [...folder.items, { ...currentPage, note, addDataTime: new Date().toISOString() }]
         };
       }
       return folder;
@@ -89,7 +89,7 @@ function SidePanel() {
     const csvHeader = "Folder title, URL title, URL, URL detail, Time Stamp \n";
     const csvData = folders.map((folder) => {
       const folderData = folder.items.map((item) => {
-        return `${folder.name},${item.title},${item.url},${item.note}, ${item.timestamp}`;
+        return `${folder.name},${item.title},${item.url},${item.note}, ${item.addDataTime}`;
       });
       return folderData.join("\n");
     }).join("\n");
@@ -193,7 +193,7 @@ function SidePanel() {
                         {item.title}
                       </a>
                       <p style={{ color: "gray", fontSize: "small"}}>{item.note}</p>
-                      <p>{item.timestamp}</p>
+                      <p>{item.addDataTime}</p>
                     </div>
                     <img
                       onClick={() => removeItem(folderIndex, itemIndex)}
