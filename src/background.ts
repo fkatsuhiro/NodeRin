@@ -25,11 +25,12 @@ chrome.runtime.onInstalled.addListener(() => {
         if (folderIndex !== -1) {
           const folder = folders[folderIndex];
           const newItems = folder.items.filter((item) => item.url !== activeTab.url);
-          folders[folderIndex] = { ...folder, items: newItems };
+          folders[folderIndex] = { ...folder, items: newItems, updateTime: new Date().toISOString() };
         } else {
           const newFolder: Folder = {
             name: "New Folder",
             note: "",
+            updateTime: new Date().toISOString(),
             items: [activeTab],
           };
           folders.push(newFolder);

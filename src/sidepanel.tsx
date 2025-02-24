@@ -17,6 +17,7 @@ export type Data = {
 export type Folder = {
   name: string;
   note: string;
+  updateTime: string;
   items: Data[];
 };
 
@@ -68,7 +69,8 @@ function SidePanel() {
     const newFolder: Folder = {
       name: folderName,
       note: note,
-      items: [{ ...currentPage, note, addDataTime: new Date().toISOString() }]
+      updateTime: new Date().toISOString(),
+      items: [{ ...currentPage, note, addDataTime: new Date().toISOString() }], 
     };
     setFolders([...folders, newFolder]);
   };
@@ -78,6 +80,7 @@ function SidePanel() {
       if (folder.name === folderName) {
         return {
           ...folder,
+          updateTime: new Date().toISOString(),
           items: [...folder.items, { ...currentPage, note, addDataTime: new Date().toISOString() }]
         };
       }
@@ -117,6 +120,7 @@ function SidePanel() {
         }
         return {
           ...folder,
+          updateTime: new Date().toISOString(),
           items: updatedItems
         };
       }
@@ -176,19 +180,24 @@ function SidePanel() {
                   className="ms-auto"
                 />
                 <img
-                  onClick={handleExportSpreadSheet}
+                  onClick={() => {
+                    handleExportSpreadSheet();
+                  }}
                   alt="spreadsheet"
                   src={exportIcon}
                   style={{ width: "20px", height: "20px", cursor: "pointer" }}
                   className="ms-auto"
                 />
                 <img
-                  onClick={() => removeFolder(folderIndex)}
+                  onClick={() => {
+                    removeFolder(folderIndex);
+                  }}
                   alt="delete"
                   src={deleteIcon}
                   style={{ width: "20px", height: "20px", cursor: "pointer" }}
                   className="ms-auto"
                 />
+                <p>{folder.updateTime}</p>
               </summary>
               <ul style={{ listStyle: "none", width: "100%" }}>
                 {folder.items.map((item, itemIndex) => (
@@ -201,7 +210,9 @@ function SidePanel() {
                       <p>{item.addDataTime}</p>
                     </div>
                     <img
-                      onClick={() => removeItem(folderIndex, itemIndex)}
+                      onClick={() => {
+                        removeItem(folderIndex, itemIndex);
+                      }}
                       alt="delete"
                       src={deleteIcon}
                       style={{ width: "20px", height: "20px", cursor: "pointer" }}
