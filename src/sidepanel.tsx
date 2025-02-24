@@ -6,13 +6,13 @@ import plusIcon from './assets/plusIcon.png';
 import exportIcon from './assets/exportIcon.png';
 import "bootstrap/dist/css/bootstrap.min.css";
 
-type Data = {
+export type Data = {
   title: string;
   url: string;
   note?: string;
 };
 
-type Folder = {
+export type Folder = {
   name: string;
   note: string;
   items: Data[];
@@ -28,7 +28,7 @@ function SidePanel() {
   const [initialFolderName, setInitialFolderName] = useState<string | null>(null);
 
   // 現在のタブ情報を取得
-  useEffect(() => {
+  const updateCurrentPage = () => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       const activeTab = tabs[0];
       if (!activeTab) return;
@@ -38,9 +38,29 @@ function SidePanel() {
         url: activeTab.url || "There are no url"
       });
     });
+  };
+
+  useEffect(() => {
+    updateCurrentPage();
+
+    // タブがアクティブになったときのイベントリスナー
+    chrome.tabs.onActivated.addListener(updateCurrentPage);
+
+    // タブが更新されたときのイベントリスナー
+    chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+      if (changeInfo.status === "complete") {
+        updateCurrentPage();
+      }
+    });
+
+    // クリーンアップ
+    return () => {
+      chrome.tabs.onActivated.removeListener(updateCurrentPage);
+      chrome.tabs.onUpdated.removeListener(updateCurrentPage);
+    };
   }, []);
 
-  const handleAddFolder = (folderName: string, note: string, currentPage: Data) => {
+  const handleAddFolder = (folderName: string, note: string) => {
     const newFolder: Folder = {
       name: folderName,
       note: note,
@@ -49,7 +69,7 @@ function SidePanel() {
     setFolders([...folders, newFolder]);
   };
 
-  const handleAddItemToFolder = (folderName: string, note: string, currentPage: Data) => {
+  const handleAddItemToFolder = (folderName: string, note: string) => {
     const updatedFolders = folders.map((folder) => {
       if (folder.name === folderName) {
         return {
@@ -62,7 +82,6 @@ function SidePanel() {
     setFolders(updatedFolders);
   };
 
-  /* csvの出力 */
   const handleExportSpreadSheet = () => {
     const csvHeader = "Folder title, URL title, URL, URL detail \n";
     const csvData = folders.map((folder) => {
@@ -85,7 +104,6 @@ function SidePanel() {
     window.URL.revokeObjectURL(url);
   };
 
-  /* メモの削除 */
   const removeItem = (folderIndex: number, itemIndex: number) => {
     const updatedFolders = folders.map((folder, i) => {
       if (i === folderIndex) {
