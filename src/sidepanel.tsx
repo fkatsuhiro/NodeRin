@@ -131,7 +131,8 @@ function SidePanel() {
           <li key={folderIndex} style={{ marginBottom: 8, listStyle: "none" }}>
             <details>
               <summary style={{ width: "100%" }}>
-                {folder.name}
+                {folder.name} &nbsp;
+                <span className="badge bg-secondary rounded-pill">{folder.items.length}</span>
                 <img
                   onClick={() => {
                     setInitialFolderName(folder.name);
