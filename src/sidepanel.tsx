@@ -104,6 +104,12 @@ function SidePanel() {
     setFolders(updatedFolders);
   };
 
+  /* フォルダの削除 */
+  const removeFolder = (folderIndex: number) => {
+    const updatedFolders = folders.filter((_, i) => i !== folderIndex);
+    setFolders(updatedFolders);
+  };
+
   return (
     <div style={{ display: "flex", flexDirection: "column", padding: 16 }}>
       <h2>You can save some URLs!!</h2>
@@ -144,12 +150,19 @@ function SidePanel() {
                   className="ms-auto"
                 />
                 <img
-                      onClick={handleExportSpreadSheet}
-                      alt="spreadsheet"
-                      src={exportIcon}
-                      style={{ width: "20px", height: "20px", cursor: "pointer" }}
-                      className="ms-auto"
-                    />
+                  onClick={handleExportSpreadSheet}
+                  alt="spreadsheet"
+                  src={exportIcon}
+                  style={{ width: "20px", height: "20px", cursor: "pointer" }}
+                  className="ms-auto"
+                />
+                <img
+                  onClick={() => removeFolder(folderIndex)}
+                  alt="delete"
+                  src={deleteIcon}
+                  style={{ width: "20px", height: "20px", cursor: "pointer" }}
+                  className="ms-auto"
+                />
               </summary>
               <ul style={{ listStyle: "none", width: "100%" }}>
                 {folder.items.map((item, itemIndex) => (
