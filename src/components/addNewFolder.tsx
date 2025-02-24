@@ -39,6 +39,7 @@ const AddNewFolder = ({ onAddFolder, onClose, currentPage, initialFolderName="" 
         onChange={handleInputFolderNameChange}
         placeholder="フォルダ名を入力"
         className="input w-80 form-control mt-3"
+        readOnly={!!initialFolderName}
       />
       <textarea
         value={inputMemo}

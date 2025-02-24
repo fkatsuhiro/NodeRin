@@ -157,7 +157,7 @@ function SidePanel() {
                       <a href={item.url} target="_blank" rel="noopener noreferrer">
                         {item.title}
                       </a>
-                      <p>{item.note}</p>
+                      <p style={{ color: "gray", fontSize: "small"}}>{item.note}</p>
                     </div>
                     <img
                       onClick={() => removeItem(folderIndex, itemIndex)}
