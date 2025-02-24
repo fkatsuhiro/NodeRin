@@ -64,13 +64,18 @@ function SidePanel() {
   const removeItem = (folderIndex: number, itemIndex: number) => {
     const updatedFolders = folders.map((folder, i) => {
       if (i === folderIndex) {
+        const updatedItems = folder.items.filter((_, index) => index !== itemIndex);
+        if (updatedItems.length === 0) {
+          return null; // フォルダ内のアイテムが0件になった場合、フォルダを削除
+        }
         return {
           ...folder,
-          items: folder.items.filter((_, index) => index !== itemIndex)
+          items: updatedItems
         };
       }
       return folder;
-    });
+    }).filter(folder => folder !== null); // nullのフォルダを削除
+
     setFolders(updatedFolders);
   };
 
