@@ -30,6 +30,7 @@ chrome.runtime.onInstalled.addListener(() => {
           const newFolder: Folder = {
             name: "New Folder",
             note: "",
+            updateTime: "",
             items: [activeTab],
           };
           folders.push(newFolder);
