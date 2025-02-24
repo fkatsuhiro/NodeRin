@@ -1,3 +1,8 @@
+import { Storage } from "@plasmohq/storage";
+import type { Data, Folder } from "./sidepanel";
+
+const storage = new Storage();
+
 chrome.runtime.onInstalled.addListener(() => {
     chrome.contextMenus.create({
       id: "save",

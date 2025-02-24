@@ -6,13 +6,14 @@ import plusIcon from './assets/plusIcon.png';
 import exportIcon from './assets/exportIcon.png';
 import "bootstrap/dist/css/bootstrap.min.css";
 
-type Data = {
+export type Data = {
   title: string;
   url: string;
   note?: string;
+  timestamp : string;
 };
 
-type Folder = {
+export type Folder = {
   name: string;
   note: string;
   items: Data[];
@@ -22,25 +23,47 @@ function SidePanel() {
   const [folders, setFolders] = useStorage<Folder[]>("folders", []);
   const [currentPage, setCurrentPage] = useState<Data>({
     title: "",
-    url: ""
+    url: "",
+    timestamp: ""
   });
   const [showAddFolder, setShowAddFolder] = useState(false);
   const [initialFolderName, setInitialFolderName] = useState<string | null>(null);
 
   // 現在のタブ情報を取得
-  useEffect(() => {
+  const updateCurrentPage = () => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       const activeTab = tabs[0];
       if (!activeTab) return;
 
       setCurrentPage({
         title: activeTab.title || "There are no title",
-        url: activeTab.url || "There are no url"
+        url: activeTab.url || "There are no url",
+        timestamp: new Date().toISOString() // 時間を記録
       });
     });
+  };
+
+  useEffect(() => {
+    updateCurrentPage();
+
+    // タブがアクティブになったときのイベントリスナー
+    chrome.tabs.onActivated.addListener(updateCurrentPage);
+
+    // タブが更新されたときのイベントリスナー
+    chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+      if (changeInfo.status === "complete") {
+        updateCurrentPage();
+      }
+    });
+
+    // クリーンアップ
+    return () => {
+      chrome.tabs.onActivated.removeListener(updateCurrentPage);
+      chrome.tabs.onUpdated.removeListener(updateCurrentPage);
+    };
   }, []);
 
-  const handleAddFolder = (folderName: string, note: string, currentPage: Data) => {
+  const handleAddFolder = (folderName: string, note: string, ) => {
     const newFolder: Folder = {
       name: folderName,
       note: note,
@@ -49,7 +72,7 @@ function SidePanel() {
     setFolders([...folders, newFolder]);
   };
 
-  const handleAddItemToFolder = (folderName: string, note: string, currentPage: Data) => {
+  const handleAddItemToFolder = (folderName: string, note: string, ) => {
     const updatedFolders = folders.map((folder) => {
       if (folder.name === folderName) {
         return {
@@ -62,12 +85,11 @@ function SidePanel() {
     setFolders(updatedFolders);
   };
 
-  /* csvの出力 */
   const handleExportSpreadSheet = () => {
-    const csvHeader = "Folder title, URL title, URL, URL detail \n";
+    const csvHeader = "Folder title, URL title, URL, URL detail, Time Stamp \n";
     const csvData = folders.map((folder) => {
       const folderData = folder.items.map((item) => {
-        return `${folder.name},${item.title},${item.url},${item.note}`;
+        return `${folder.name},${item.title},${item.url},${item.note}, ${item.timestamp}`;
       });
       return folderData.join("\n");
     }).join("\n");
@@ -85,7 +107,6 @@ function SidePanel() {
     window.URL.revokeObjectURL(url);
   };
 
-  /* メモの削除 */
   const removeItem = (folderIndex: number, itemIndex: number) => {
     const updatedFolders = folders.map((folder, i) => {
       if (i === folderIndex) {
@@ -172,6 +193,7 @@ function SidePanel() {
                         {item.title}
                       </a>
                       <p style={{ color: "gray", fontSize: "small"}}>{item.note}</p>
+                      <p>{item.timestamp}</p>
                     </div>
                     <img
                       onClick={() => removeItem(folderIndex, itemIndex)}
