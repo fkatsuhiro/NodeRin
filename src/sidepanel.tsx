@@ -3,6 +3,7 @@ import { useStorage } from "@plasmohq/storage/hook";
 import AddNewFolder from "./components/addNewFolder";
 import deleteIcon from './assets/deleteIcon.png';
 import plusIcon from './assets/plusIcon.png';
+import exportIcon from './assets/exportIcon.png';
 import "bootstrap/dist/css/bootstrap.min.css";
 
 type Data = {
@@ -61,12 +62,36 @@ function SidePanel() {
     setFolders(updatedFolders);
   };
 
+  /* csvの出力 */
+  const handleExportSpreadSheet = () => {
+    const csvHeader = "Folder title, URL title, URL, URL detail \n";
+    const csvData = folders.map((folder) => {
+      const folderData = folder.items.map((item) => {
+        return `${folder.name},${item.title},${item.url},${item.note}`;
+      });
+      return folderData.join("\n");
+    }).join("\n");
+
+    const csvContent = csvHeader + csvData;
+
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = url;
+    a.download = 'folders.csv';
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
+
+  /* メモの削除 */
   const removeItem = (folderIndex: number, itemIndex: number) => {
     const updatedFolders = folders.map((folder, i) => {
       if (i === folderIndex) {
         const updatedItems = folder.items.filter((_, index) => index !== itemIndex);
         if (updatedItems.length === 0) {
-          return null; // フォルダ内のアイテムが0件になった場合、フォルダを削除
+          return null; 
         }
         return {
           ...folder,
@@ -74,7 +99,7 @@ function SidePanel() {
         };
       }
       return folder;
-    }).filter(folder => folder !== null); // nullのフォルダを削除
+    }).filter(folder => folder !== null);
 
     setFolders(updatedFolders);
   };
@@ -117,6 +142,13 @@ function SidePanel() {
                   style={{ width: "30px", height: "30px", cursor: "pointer"}}
                   className="ms-auto"
                 />
+                <img
+                      onClick={handleExportSpreadSheet}
+                      alt="spreadsheet"
+                      src={exportIcon}
+                      style={{ width: "20px", height: "20px", cursor: "pointer" }}
+                      className="ms-auto"
+                    />
               </summary>
               <ul style={{ listStyle: "none", width: "100%" }}>
                 {folder.items.map((item, itemIndex) => (
