@@ -89,13 +89,11 @@ function SidePanel() {
     setFolders(updatedFolders);
   };
 
-  const handleExportSpreadSheet = () => {
+  const handleExportSpreadSheet = (folderIndex: number) => {
+    const folder = folders[folderIndex];
     const csvHeader = "Folder title, URL title, URL, URL detail, Time Stamp \n";
-    const csvData = folders.map((folder) => {
-      const folderData = folder.items.map((item) => {
-        return `${folder.name},${item.title},${item.url},${item.note}, ${item.addDataTime}`;
-      });
-      return folderData.join("\n");
+    const csvData = folder.items.map((item) => {
+      return `${folder.name},${item.title},${item.url},${item.note},${item.addDataTime}`;
     }).join("\n");
 
     const csvContent = csvHeader + csvData;
@@ -105,7 +103,7 @@ function SidePanel() {
     const a = document.createElement('a');
     a.style.display = 'none';
     a.href = url;
-    a.download = 'folders.csv';
+    a.download = `${folder.name}.csv`;
     document.body.appendChild(a);
     a.click();
     window.URL.revokeObjectURL(url);
@@ -181,7 +179,7 @@ function SidePanel() {
                 />
                 <img
                   onClick={() => {
-                    handleExportSpreadSheet();
+                    handleExportSpreadSheet(folderIndex);
                   }}
                   alt="spreadsheet"
                   src={exportIcon}
