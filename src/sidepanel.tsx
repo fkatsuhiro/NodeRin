@@ -10,6 +10,7 @@ export type Data = {
   title: string;
   url: string;
   note?: string;
+  timestamp : "test";
 };
 
 export type Folder = {
@@ -22,7 +23,8 @@ function SidePanel() {
   const [folders, setFolders] = useStorage<Folder[]>("folders", []);
   const [currentPage, setCurrentPage] = useState<Data>({
     title: "",
-    url: ""
+    url: "",
+    timestamp: "test"
   });
   const [showAddFolder, setShowAddFolder] = useState(false);
   const [initialFolderName, setInitialFolderName] = useState<string | null>(null);
@@ -35,7 +37,8 @@ function SidePanel() {
 
       setCurrentPage({
         title: activeTab.title || "There are no title",
-        url: activeTab.url || "There are no url"
+        url: activeTab.url || "There are no url",
+        timestamp: "No Time Stamp"
       });
     });
   };
@@ -60,7 +63,7 @@ function SidePanel() {
     };
   }, []);
 
-  const handleAddFolder = (folderName: string, note: string) => {
+  const handleAddFolder = (folderName: string, note: string, ) => {
     const newFolder: Folder = {
       name: folderName,
       note: note,
@@ -69,7 +72,7 @@ function SidePanel() {
     setFolders([...folders, newFolder]);
   };
 
-  const handleAddItemToFolder = (folderName: string, note: string) => {
+  const handleAddItemToFolder = (folderName: string, note: string, ) => {
     const updatedFolders = folders.map((folder) => {
       if (folder.name === folderName) {
         return {
@@ -83,10 +86,10 @@ function SidePanel() {
   };
 
   const handleExportSpreadSheet = () => {
-    const csvHeader = "Folder title, URL title, URL, URL detail \n";
+    const csvHeader = "Folder title, URL title, URL, URL detail, Time Stamp \n";
     const csvData = folders.map((folder) => {
       const folderData = folder.items.map((item) => {
-        return `${folder.name},${item.title},${item.url},${item.note}`;
+        return `${folder.name},${item.title},${item.url},${item.note}, ${item.timestamp}`;
       });
       return folderData.join("\n");
     }).join("\n");

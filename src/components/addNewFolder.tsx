@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 type AddNewFolderProps = {
-  onAddFolder: (folderName: string, note: string, currentPage: { title: string; url: string }) => void;
+  onAddFolder: (folderName: string, note: string, timestamp: string, currentPage: { title: string; url: string }) => void;
   onClose: () => void;
   currentPage: { title: string; url: string };
   initialFolderName?: string;
@@ -11,6 +11,7 @@ type AddNewFolderProps = {
 const AddNewFolder = ({ onAddFolder, onClose, currentPage, initialFolderName="" }: AddNewFolderProps) => {
   const [inputFolderName, setInputFolderName] = useState(initialFolderName);
   const [inputMemo, setInputMemo] = useState("");
+
 
   const handleInputFolderNameChange = (e) => {
     setInputFolderName(e.target.value);
@@ -21,7 +22,8 @@ const AddNewFolder = ({ onAddFolder, onClose, currentPage, initialFolderName="" 
   };
 
   const handleAddButtonClick = () => {
-    onAddFolder(inputFolderName, inputMemo, currentPage);
+    const timestamp = new Date().toISOString();
+    onAddFolder(inputFolderName, inputMemo, timestamp, currentPage);
     setInputFolderName("");
     setInputMemo("");
     onClose();
