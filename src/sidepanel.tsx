@@ -5,6 +5,7 @@ import deleteIcon from './assets/deleteIcon.png';
 import plusIcon from './assets/plusIcon.png';
 import exportIcon from './assets/exportIcon.png';
 import "bootstrap/dist/css/bootstrap.min.css";
+import './styles/style.css';
 
 export type Data = {
   title: string;
@@ -133,7 +134,7 @@ function SidePanel() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", padding: 16 }}>
-      <h2>You can save some URLs!!</h2>
+      <div className="d-flex">
       <img
         onClick={() => {
           setInitialFolderName(null);
@@ -141,8 +142,12 @@ function SidePanel() {
         }}
         alt="add"
         src={plusIcon}
-        style={{ width: "40px", height: "40px", cursor: "pointer" }}
+        style={{ width: "30px", height: "30px", cursor: "pointer" }}
       />
+      <h3 className="mx-auto">Save URLs!!</h3>
+      </div>
+      <hr />
+      <div className="scrollable-content">
       {showAddFolder && (
         <div className="overlay">
           <AddNewFolder
@@ -209,6 +214,7 @@ function SidePanel() {
           </li>
         ))}
       </ul>
+      </div>
     </div>
   );
 }
