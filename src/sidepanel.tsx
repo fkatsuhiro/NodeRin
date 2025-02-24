@@ -38,7 +38,7 @@ function SidePanel() {
       setCurrentPage({
         title: activeTab.title || "There are no title",
         url: activeTab.url || "There are no url",
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString() // 時間を記録
       });
     });
   };
