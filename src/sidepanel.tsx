@@ -183,17 +183,20 @@ function SidePanel() {
                   style={{ width: "20px", height: "20px", cursor: "pointer" }}
                   className="ms-auto"
                 />
-                <p>{folder.updateTime}</p>
+                <p className="ms-auto" style={{color: "gray", fontSize: "small"}}>{folder.updateTime}</p>
               </summary>
               <ul style={{ listStyle: "none", width: "100%" }}>
                 {folder.items.map((item, itemIndex) => (
-                  <li key={itemIndex} style={{ marginBottom: 8 }} className="d-flex mt-2">
+                  <li key={itemIndex} style={{ marginBottom: 8 }} className="mt-2">
+                    <div className="d-flex">
                     <div>
                       <a href={item.url} target="_blank" rel="noopener noreferrer">
                         {item.title}
                       </a>
-                      <p style={{ color: "gray", fontSize: "small"}}>{item.note}</p>
-                      <p>{item.addDataTime}</p>
+                      <div className="row">
+                      <p className="col-7" style={{ color: "gray", fontSize: "small"}}>{item.note}</p>
+                      <div className="col-5" style={{color: "gray", fontSize: "small", textAlign: "right"}}>{item.addDataTime}</div>
+                      </div>
                     </div>
                     <img
                       onClick={() => {
@@ -204,6 +207,7 @@ function SidePanel() {
                       style={{ width: "20px", height: "20px", cursor: "pointer" }}
                       className="ms-auto"
                     />
+                    </div>
                   </li>
                 ))}
               </ul>
