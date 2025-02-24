@@ -1,6 +1,5 @@
 import { Storage } from "@plasmohq/storage";
 import type { Data, Folder } from "./sidepanel";
-import { timeStamp } from "console";
 
 const storage = new Storage();
 
@@ -22,8 +21,6 @@ chrome.runtime.onInstalled.addListener(() => {
         const folderIndex = folders.findIndex((folder) =>
           folder.items.some((item) => item.url === activeTab.url)
         );
-
-        activeTab.timestamp = new Date().toISOString();
   
         if (folderIndex !== -1) {
           const folder = folders[folderIndex];

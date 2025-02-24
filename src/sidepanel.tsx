@@ -10,7 +10,7 @@ export type Data = {
   title: string;
   url: string;
   note?: string;
-  timestamp : "test";
+  timestamp : string;
 };
 
 export type Folder = {
@@ -24,7 +24,7 @@ function SidePanel() {
   const [currentPage, setCurrentPage] = useState<Data>({
     title: "",
     url: "",
-    timestamp: "test"
+    timestamp: ""
   });
   const [showAddFolder, setShowAddFolder] = useState(false);
   const [initialFolderName, setInitialFolderName] = useState<string | null>(null);
@@ -38,7 +38,7 @@ function SidePanel() {
       setCurrentPage({
         title: activeTab.title || "There are no title",
         url: activeTab.url || "There are no url",
-        timestamp: "No Time Stamp"
+        timestamp: new Date().toISOString()
       });
     });
   };
@@ -193,6 +193,7 @@ function SidePanel() {
                         {item.title}
                       </a>
                       <p style={{ color: "gray", fontSize: "small"}}>{item.note}</p>
+                      <p>{item.timestamp}</p>
                     </div>
                     <img
                       onClick={() => removeItem(folderIndex, itemIndex)}
