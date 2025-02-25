@@ -6,6 +6,7 @@ import plusIcon from './assets/plusIcon.png';
 import exportIcon from './assets/exportIcon.png';
 import "bootstrap/dist/css/bootstrap.min.css";
 import './styles/style.css';
+import { getCurrentJSTTime } from "./utils/dateUtils";
 
 export type Data = {
   title: string;
@@ -69,8 +70,8 @@ function SidePanel() {
     const newFolder: Folder = {
       name: folderName,
       note: note,
-      updateTime: new Date().toISOString(),
-      items: [{ ...currentPage, note, addDataTime: new Date().toISOString() }], 
+      updateTime: getCurrentJSTTime(),
+      items: [{ ...currentPage, note, addDataTime: getCurrentJSTTime() }], 
     };
     setFolders([...folders, newFolder]);
   };
@@ -80,8 +81,8 @@ function SidePanel() {
       if (folder.name === folderName) {
         return {
           ...folder,
-          updateTime: new Date().toISOString(),
-          items: [...folder.items, { ...currentPage, note, addDataTime: new Date().toISOString() }]
+          updateTime: getCurrentJSTTime(),
+          items: [...folder.items, { ...currentPage, note, addDataTime: getCurrentJSTTime() }]
         };
       }
       return folder;
@@ -118,7 +119,7 @@ function SidePanel() {
         }
         return {
           ...folder,
-          updateTime: new Date().toISOString(),
+          updateTime: getCurrentJSTTime(),
           items: updatedItems
         };
       }
