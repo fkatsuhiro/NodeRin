@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Storage } from "@plasmohq/storage";
 
@@ -28,13 +28,17 @@ const AddNewFolder = ({ onAddFolder, onClose, currentPage, initialFolderName="" 
       alert("フォルダ名を入力してください。");
       return;
     }
-
-    // フォルダ名の重複チェック
-    const folders = await storage.get<Folder[]>("folders") ?? [];
-    const isDuplicate = folders.some(folder => folder.name === inputFolderName);
-    if (isDuplicate) {
-      alert("同じ名前のフォルダが既に存在します。");
-      return;
+    let existingFolders = (await storage.get("folders")) || [];
+    if (typeof existingFolders === 'string') {
+      existingFolders = JSON.parse(existingFolders);
+    }
+    const folder = existingFolders.find((folder) => folder.name === inputFolderName);
+    if (folder) {
+      const urlExists = folder.items.some((item) => item.url === currentPage.url);
+      if (urlExists) {
+        alert("同じURLが既に存在します。");
+        return;
+      }
     }
 
     onAddFolder(inputFolderName, inputMemo, currentPage);

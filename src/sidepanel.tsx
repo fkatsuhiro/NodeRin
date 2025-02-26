@@ -6,20 +6,8 @@ import plusIcon from './assets/plusIcon.png';
 import exportIcon from './assets/exportIcon.png';
 import "bootstrap/dist/css/bootstrap.min.css";
 import './styles/style.css';
-
-export type Data = {
-  title: string;
-  url: string;
-  note?: string;
-  addDataTime : string;
-};
-
-export type Folder = {
-  name: string;
-  note: string;
-  updateTime: string;
-  items: Data[];
-};
+import { getCurrentJSTTime } from "./utils/dateUtils";
+import type { Folder, Data } from "./lib/storage";
 
 function SidePanel() {
   const [folders, setFolders] = useStorage<Folder[]>("folders", []);
@@ -69,8 +57,8 @@ function SidePanel() {
     const newFolder: Folder = {
       name: folderName,
       note: note,
-      updateTime: new Date().toISOString(),
-      items: [{ ...currentPage, note, addDataTime: new Date().toISOString() }], 
+      updateTime: getCurrentJSTTime(),
+      items: [{ ...currentPage, note, addDataTime: getCurrentJSTTime() }], 
     };
     setFolders([...folders, newFolder]);
   };
@@ -80,8 +68,8 @@ function SidePanel() {
       if (folder.name === folderName) {
         return {
           ...folder,
-          updateTime: new Date().toISOString(),
-          items: [...folder.items, { ...currentPage, note, addDataTime: new Date().toISOString() }]
+          updateTime: getCurrentJSTTime(),
+          items: [...folder.items, { ...currentPage, note, addDataTime: getCurrentJSTTime() }]
         };
       }
       return folder;
@@ -118,7 +106,7 @@ function SidePanel() {
         }
         return {
           ...folder,
-          updateTime: new Date().toISOString(),
+          updateTime: getCurrentJSTTime(),
           items: updatedItems
         };
       }
