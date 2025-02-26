@@ -7,20 +7,7 @@ import exportIcon from './assets/exportIcon.png';
 import "bootstrap/dist/css/bootstrap.min.css";
 import './styles/style.css';
 import { getCurrentJSTTime } from "./utils/dateUtils";
-
-export type Data = {
-  title: string;
-  url: string;
-  note?: string;
-  addDataTime : string;
-};
-
-export type Folder = {
-  name: string;
-  note: string;
-  updateTime: string;
-  items: Data[];
-};
+import type { Folder, Data } from "./lib/storage";
 
 function SidePanel() {
   const [folders, setFolders] = useStorage<Folder[]>("folders", []);

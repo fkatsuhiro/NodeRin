@@ -1,5 +1,5 @@
 import { Storage } from "@plasmohq/storage";
-import type { Data, Folder } from "./sidepanel";
+import type { Data, Folder } from "./lib/storage";
 
 const storage = new Storage();
 
