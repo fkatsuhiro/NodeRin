@@ -4,6 +4,7 @@ import AddNewFolder from "./components/addNewFolder";
 import deleteIcon from './assets/deleteIcon.png';
 import plusIcon from './assets/plusIcon.png';
 import exportIcon from './assets/exportIcon.png';
+import openIcon from './assets/openIcon.png'; // 新しいアイコンをインポート
 import "bootstrap/dist/css/bootstrap.min.css";
 import './styles/style.css';
 import { getCurrentJSTTime } from "./utils/dateUtils";
@@ -122,6 +123,14 @@ function SidePanel() {
     setFolders(updatedFolders);
   };
 
+  /* フォルダ内の全てのURLを開く */
+  const openAllUrlsInFolder = (folderIndex: number) => {
+    const folder = folders[folderIndex];
+    folder.items.forEach(item => {
+      window.open(item.url, '_blank');
+    });
+  };
+
   return (
     <div style={{ display: "flex", flexDirection: "column", padding: 16 }}>
       <div className="d-flex">
@@ -155,6 +164,15 @@ function SidePanel() {
               <summary style={{ width: "100%" }}>
                 {folder.name} &nbsp;
                 <span className="badge bg-secondary rounded-pill">{folder.items.length}</span>
+                <img
+                  onClick={() => {
+                    openAllUrlsInFolder(folderIndex);
+                  }}
+                  alt="open"
+                  src={openIcon}
+                  style={{ width: "20px", height: "20px", cursor: "pointer" }}
+                  className="ms-auto"
+                />
                 <img
                   onClick={() => {
                     setInitialFolderName(folder.name);
