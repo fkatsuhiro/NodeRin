@@ -197,7 +197,7 @@ function SidePanel() {
                   style={{ width: "20px", height: "20px", cursor: "pointer" }}
                   className="ms-auto"
                 />
-                <p className="ms-auto" style={{color: "gray", fontSize: "small", textAlign: "right"}}>{formatDate(folder.updateTime)}</p>
+                <p className="ms-auto" style={{color: "gray", fontSize: "small"}}> &nbsp; &nbsp; &nbsp; &nbsp; {formatDate(folder.updateTime)}</p>
               </summary>
               <ul style={{ listStyle: "none", width: "100%" }}>
                 {folder.items.map((item, itemIndex) => (
@@ -209,7 +209,7 @@ function SidePanel() {
                       </a>
                       <p style={{ color: "gray", fontSize: "small"}}>
                         {item.note} <br />
-                        <span style={{textAlign: "right"}}>{formatDate(item.addDataTime)}</span>
+                        <span> &nbsp; &nbsp; &nbsp; &nbsp; {formatDate(item.addDataTime)}</span>
                       </p>
                     </div>
                     <img
