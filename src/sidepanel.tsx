@@ -9,6 +9,20 @@ import './styles/style.css';
 import { getCurrentJSTTime } from "./utils/dateUtils";
 import type { Folder, Data } from "./lib/storage";
 
+/* Time Stampの調整 */
+function formatDate(dateString: string): string {
+  const date = new Date(dateString);
+  const options: Intl.DateTimeFormatOptions = {
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  };
+  const formattedDate = date.toLocaleDateString(undefined, options);
+  const year = date.getFullYear();
+  return `${year}年 ${formattedDate}`;
+}
+
 function SidePanel() {
   const [folders, setFolders] = useStorage<Folder[]>("folders", []);
   const [currentPage, setCurrentPage] = useState<Data>({
@@ -134,7 +148,7 @@ function SidePanel() {
         src={plusIcon}
         style={{ width: "30px", height: "30px", cursor: "pointer" }}
       />
-      <h3 className="mx-auto">Save URLs!!</h3>
+      <h3 className="mx-auto">Nodeりん</h3>
       </div>
       <hr />
       <div className="scrollable-content">
@@ -183,7 +197,7 @@ function SidePanel() {
                   style={{ width: "20px", height: "20px", cursor: "pointer" }}
                   className="ms-auto"
                 />
-                <p className="ms-auto" style={{color: "gray", fontSize: "small"}}>{folder.updateTime}</p>
+                <p className="ms-auto" style={{color: "gray", fontSize: "small", textAlign: "right"}}>{formatDate(folder.updateTime)}</p>
               </summary>
               <ul style={{ listStyle: "none", width: "100%" }}>
                 {folder.items.map((item, itemIndex) => (
@@ -193,10 +207,10 @@ function SidePanel() {
                       <a href={item.url} target="_blank" rel="noopener noreferrer">
                         {item.title}
                       </a>
-                      <div className="row">
-                      <p className="col-7" style={{ color: "gray", fontSize: "small"}}>{item.note}</p>
-                      <div className="col-5" style={{color: "gray", fontSize: "small", textAlign: "right"}}>{item.addDataTime}</div>
-                      </div>
+                      <p style={{ color: "gray", fontSize: "small"}}>
+                        {item.note} <br />
+                        <span style={{textAlign: "right"}}>{formatDate(item.addDataTime)}</span>
+                      </p>
                     </div>
                     <img
                       onClick={() => {
