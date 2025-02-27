@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { useStorage } from "@plasmohq/storage/hook";
 import AddNewFolder from "./components/addNewFolder";
+import UrlRelevance from "./components/UrlRelevance";
 import deleteIcon from './assets/deleteIcon.png';
+import newfolderIcon from './assets/newfolderIcon.png';
 import plusIcon from './assets/plusIcon.png';
 import exportIcon from './assets/exportIcon.png';
-import openIcon from './assets/openIcon.png'; // 新しいアイコンをインポート
+import openIcon from './assets/openIcon.png';
 import "bootstrap/dist/css/bootstrap.min.css";
 import './styles/style.css';
 import { getCurrentJSTTime } from "./utils/dateUtils";
@@ -43,7 +45,7 @@ function SidePanel() {
       setCurrentPage({
         title: activeTab.title || "There are no title",
         url: activeTab.url || "There are no url",
-        addDataTime: ""
+        addDataTime: getCurrentJSTTime(),
       });
     });
   };
@@ -154,7 +156,7 @@ function SidePanel() {
           setShowAddFolder(true);
         }}
         alt="add"
-        src={plusIcon}
+        src={newfolderIcon}
         style={{ width: "30px", height: "30px", cursor: "pointer" }}
       />
       <h3 className="mx-auto">Nodeりん</h3>
@@ -180,21 +182,21 @@ function SidePanel() {
                 <span className="badge bg-secondary rounded-pill">{folder.items.length}</span>
                 <img
                   onClick={() => {
-                    openAllUrlsInFolder(folderIndex);
-                  }}
-                  alt="open"
-                  src={openIcon}
-                  style={{ width: "20px", height: "20px", cursor: "pointer" }}
-                  className="ms-auto"
-                />
-                <img
-                  onClick={() => {
                     setInitialFolderName(folder.name);
                     setShowAddFolder(true);
                   }}
                   alt="add"
                   src={plusIcon}
                   style={{ width: "30px", height: "30px", cursor: "pointer"}}
+                  className="ms-auto"
+                />
+                <img
+                  onClick={() => {
+                    openAllUrlsInFolder(folderIndex);
+                  }}
+                  alt="open"
+                  src={openIcon}
+                  style={{ width: "30px", height: "30px", cursor: "pointer" }}
                   className="ms-auto"
                 />
                 <img
@@ -222,6 +224,7 @@ function SidePanel() {
                   <li key={itemIndex} style={{ marginBottom: 8 }} className="mt-2">
                     <div className="d-flex">
                     <div>
+                      <UrlRelevance initialTime={folder.items[0].addDataTime} currentTime={item.addDataTime} />
                       <a href={item.url} target="_blank" rel="noopener noreferrer">
                         {item.title}
                       </a>
