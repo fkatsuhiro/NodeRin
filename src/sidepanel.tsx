@@ -225,7 +225,7 @@ function SidePanel() {
                     <div className="d-flex">
                     <div>
                       <UrlRelevance initialTime={folder.items[0].addDataTime} currentTime={item.addDataTime} />
-                      <a href={item.url} target="_blank" rel="noopener noreferrer">
+                      <a href={item.url} target="_blank" rel="noopener noreferrer" style={{marginLeft: "10px"}}>
                         {item.title}
                       </a>
                       <p style={{ color: "gray", fontSize: "small"}}>
