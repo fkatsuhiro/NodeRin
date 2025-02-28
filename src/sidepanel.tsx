@@ -162,7 +162,7 @@ function SidePanel() {
       <h3 className="mx-auto">Nodeりん</h3>
       </div>
       <hr />
-      <div className="scrollable-content">
+      <div>
       {showAddFolder && (
         <div className="overlay">
           <AddNewFolder
